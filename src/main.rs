@@ -10,8 +10,8 @@ mod generators;
 #[derive(Debug, Parser)]
 struct Opt {
   /// Output ASCII-only text instead of ANSI symbols
-  #[clap(short, long)]
-  ascii_text: bool,
+  #[clap(long)]
+  ascii: bool,
 
   /// Generator to use for the frames
   #[clap(value_enum, default_value_t = BowlingGeneratorType::Dice)]
@@ -24,14 +24,6 @@ enum BowlingGeneratorType {
   Dice,
 }
 
-impl BowlingGeneratorType {
-  fn get_generator<'a, R: Rng + 'a>(self, rng: R) -> Box<dyn BowlingGenerator + 'a> {
-    match self {
-      Self::Dice => Box::new(generators::DiceGenerator::new(rng)),
-    }
-  }
-}
-
 fn main() {
   let opt: Opt = Opt::parse();
 
@@ -40,5 +32,11 @@ fn main() {
     BowlingGeneratorType::Dice => Game::generate(generators::DiceGenerator::new(rng)),
   };
 
-  println!("{}", game.get_ansi_string());
+  let text = if opt.ascii {
+    game.get_ascii_string()
+  } else {
+    game.get_ansi_string()
+  };
+
+  println!("{text}");
 }

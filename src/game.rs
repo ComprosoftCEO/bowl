@@ -39,6 +39,34 @@ impl Game {
     [top_row, sub_scores_row, middle_row, cumulative_scores_row, bottom_row].join("\n")
   }
 
+  pub fn get_ascii_string(&self) -> String {
+    let top_row = "_".to_string() + &"____".repeat(9) + "______";
+
+    let sub_scores_row = "|".to_string()
+      + &self
+        .frames
+        .iter()
+        .map(Frame::sub_score_ascii_string)
+        .collect::<String>()
+      + &self.last_frame.sub_score_ascii_string();
+
+    let middle_row = "|".to_string() + &" --|".repeat(9) + " ----|";
+
+    let cumulative_scores_row =
+      self
+        .get_cumulative_frame_scores()
+        .into_iter()
+        .enumerate()
+        .fold("|".to_string(), |acc, (i, score)| {
+          let len = if i == 9 { 5 } else { 3 }; // Special case for last frame
+          acc + &format!("{score:>len$}|", len = len)
+        });
+
+    let bottom_row = "|".to_string() + &"___|".repeat(9) + "_____|";
+
+    [top_row, sub_scores_row, middle_row, cumulative_scores_row, bottom_row].join("\n")
+  }
+
   fn get_cumulative_frame_scores(&self) -> [u16; 10] {
     let mut cumulative_score = 0;
 

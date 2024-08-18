@@ -40,6 +40,14 @@ impl Frame {
       Frame::Open { first, second } => format!("{first}|{second}│"),
     }
   }
+
+  pub fn sub_score_ascii_string(&self) -> String {
+    match self {
+      Frame::Strike => format!("{STRIKE}| |"),
+      Frame::Spare { first } => format!("{first}|{SPARE}|"),
+      Frame::Open { first, second } => format!("{first}|{second}|"),
+    }
+  }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -76,6 +84,17 @@ impl LastFrame {
       LastFrame::SpareStrike { first } => format!("{first}│{SPARE}│{STRIKE}│"),
       LastFrame::SpareOpen { first, third } => format!("{first}│{SPARE}│{third}│"),
       LastFrame::Open { first, second } => format!("{first}│{second}│ │"),
+    }
+  }
+
+  pub fn sub_score_ascii_string(&self) -> String {
+    match self {
+      LastFrame::TripleStrike => format!("{STRIKE}|{STRIKE}|{STRIKE}|"),
+      LastFrame::StrikeSpare { second } => format!("{STRIKE}|{second}|{STRIKE}|"),
+      LastFrame::StrikeOpen { second, third } => format!("{STRIKE}|{second}|{third}|"),
+      LastFrame::SpareStrike { first } => format!("{first}|{SPARE}|{STRIKE}|"),
+      LastFrame::SpareOpen { first, third } => format!("{first}|{SPARE}|{third}|"),
+      LastFrame::Open { first, second } => format!("{first}|{second}| |"),
     }
   }
 }
