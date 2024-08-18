@@ -1,7 +1,5 @@
 use clap::{Parser, ValueEnum};
 use game::Game;
-use generators::BowlingGenerator;
-use rand::Rng;
 
 mod game;
 mod generators;
