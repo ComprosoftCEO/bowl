@@ -36,16 +36,16 @@ impl Frame {
   pub fn sub_score_ansi_string(&self) -> String {
     match self {
       Frame::Strike => format!("{STRIKE}│ │"),
-      Frame::Spare { first } => format!("{first}│{SPARE}│"),
-      Frame::Open { first, second } => format!("{first}|{second}│"),
+      Frame::Spare { first } => format!("{}│{SPARE}│", format_number(*first)),
+      Frame::Open { first, second } => format!("{}|{}│", format_number(*first), format_number(*second)),
     }
   }
 
   pub fn sub_score_ascii_string(&self) -> String {
     match self {
       Frame::Strike => format!("{STRIKE}| |"),
-      Frame::Spare { first } => format!("{first}|{SPARE}|"),
-      Frame::Open { first, second } => format!("{first}|{second}|"),
+      Frame::Spare { first } => format!("{}|{SPARE}|", format_number(*first)),
+      Frame::Open { first, second } => format!("{}|{}|", format_number(*first), format_number(*second)),
     }
   }
 }
@@ -81,24 +81,36 @@ impl LastFrame {
   pub fn sub_score_ansi_string(&self) -> String {
     match self {
       LastFrame::TripleStrike => format!("{STRIKE}│{STRIKE}|{STRIKE}│"),
-      LastFrame::DoubleStrikeOpen { third } => format!("{STRIKE}│{STRIKE}│{third}│"),
-      LastFrame::StrikeSpare { second } => format!("{STRIKE}│{second}|{SPARE}│"),
-      LastFrame::StrikeOpen { second, third } => format!("{STRIKE}|{second}|{third}│"),
-      LastFrame::SpareStrike { first } => format!("{first}│{SPARE}│{STRIKE}│"),
-      LastFrame::SpareOpen { first, third } => format!("{first}│{SPARE}│{third}│"),
-      LastFrame::Open { first, second } => format!("{first}│{second}│ │"),
+      LastFrame::DoubleStrikeOpen { third } => format!("{STRIKE}│{STRIKE}│{}│", format_number(*third)),
+      LastFrame::StrikeSpare { second } => format!("{STRIKE}│{}|{SPARE}│", format_number(*second)),
+      LastFrame::StrikeOpen { second, third } => {
+        format!("{STRIKE}|{}|{}│", format_number(*second), format_number(*third))
+      },
+      LastFrame::SpareStrike { first } => format!("{}│{SPARE}│{STRIKE}│", format_number(*first)),
+      LastFrame::SpareOpen { first, third } => format!("{}│{SPARE}│{}│", format_number(*first), format_number(*third)),
+      LastFrame::Open { first, second } => format!("{}│{}│ │", format_number(*first), format_number(*second)),
     }
   }
 
   pub fn sub_score_ascii_string(&self) -> String {
     match self {
       LastFrame::TripleStrike => format!("{STRIKE}|{STRIKE}|{STRIKE}|"),
-      LastFrame::DoubleStrikeOpen { third } => format!("{STRIKE}|{STRIKE}|{third}|"),
-      LastFrame::StrikeSpare { second } => format!("{STRIKE}|{second}|{SPARE}|"),
-      LastFrame::StrikeOpen { second, third } => format!("{STRIKE}|{second}|{third}|"),
-      LastFrame::SpareStrike { first } => format!("{first}|{SPARE}|{STRIKE}|"),
-      LastFrame::SpareOpen { first, third } => format!("{first}|{SPARE}|{third}|"),
-      LastFrame::Open { first, second } => format!("{first}|{second}| |"),
+      LastFrame::DoubleStrikeOpen { third } => format!("{STRIKE}|{STRIKE}|{}|", format_number(*third)),
+      LastFrame::StrikeSpare { second } => format!("{STRIKE}|{}|{SPARE}|", format_number(*second)),
+      LastFrame::StrikeOpen { second, third } => {
+        format!("{STRIKE}|{}|{}|", format_number(*second), format_number(*third))
+      },
+      LastFrame::SpareStrike { first } => format!("{}|{SPARE}|{STRIKE}|", format_number(*first)),
+      LastFrame::SpareOpen { first, third } => format!("{}|{SPARE}|{}|", format_number(*first), format_number(*third)),
+      LastFrame::Open { first, second } => format!("{}|{}| |", format_number(*first), format_number(*second)),
     }
+  }
+}
+
+fn format_number(input: u16) -> String {
+  if input == 0 {
+    "-".into()
+  } else {
+    input.to_string()
   }
 }

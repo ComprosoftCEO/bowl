@@ -50,7 +50,7 @@ impl Game {
         .collect::<String>()
       + &self.last_frame.sub_score_ascii_string();
 
-    let middle_row = "|".to_string() + &" --|".repeat(9) + " ----|";
+    let middle_row = "|".to_string() + &" '-|".repeat(9) + " '---|";
 
     let cumulative_scores_row =
       self
