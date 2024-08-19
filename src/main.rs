@@ -20,6 +20,7 @@ struct Opt {
 #[clap(rename_all = "kebab-case")]
 enum BowlingGeneratorType {
   Dice,
+  Uniform,
 }
 
 fn main() {
@@ -28,6 +29,7 @@ fn main() {
   let rng = rand::thread_rng();
   let game: Game = match opt.generator {
     BowlingGeneratorType::Dice => Game::generate(generators::DiceGenerator::new(rng)),
+    BowlingGeneratorType::Uniform => Game::generate(generators::UniformGenerator::new(rng)),
   };
 
   let text = if opt.ascii {

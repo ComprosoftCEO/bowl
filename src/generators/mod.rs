@@ -1,7 +1,9 @@
 // Generators getting exposed
 mod dice_generator;
+mod uniform_generator;
 
 pub use dice_generator::DiceGenerator;
+pub use uniform_generator::UniformGenerator;
 
 // Shared traits
 const STRIKE: &str = "X";

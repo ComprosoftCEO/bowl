@@ -25,7 +25,10 @@ Options:
   -h, --help   Print help
 ```
 
-The only random generator supported right now is `dice` which is based on the [Bowling Dice Game](https://boardgamegeek.com/boardgame/3934/bowling-dice). But at some point I might add other generator types.
+**Generator Types:**
+
+- `dice` - Generates frames based on the [Bowling Dice Game](https://boardgamegeek.com/boardgame/3934/bowling-dice)
+- `uniform` - First roll picks a uniform random number between 0 and 10. Second roll picks a uniform random number between 0 and the first roll.
 
 ### ANSI Output
 
