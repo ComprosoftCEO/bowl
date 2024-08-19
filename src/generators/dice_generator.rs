@@ -1,7 +1,7 @@
 use rand::{seq::SliceRandom, Rng};
 use std::collections::LinkedList;
 
-use crate::generators::{BowlingGenerator, Frame, LastFrame};
+use crate::generators::{BowlingGenerator, Frame};
 
 pub struct DiceGenerator<R: Rng> {
   rng: R,
@@ -93,59 +93,6 @@ impl<R: Rng> BowlingGenerator for DiceGenerator<R> {
       Frame::Spare { first }
     } else {
       Frame::Open { first, second }
-    }
-  }
-
-  fn generate_last_frame(&mut self) -> LastFrame {
-    match self.generate_frame() {
-      Frame::Open { first, second } => LastFrame::Open { first, second },
-
-      Frame::Spare { first } => {
-        let mut third = 0;
-        for die in Self::get_all_dice() {
-          match die.roll(&mut self.rng) {
-            DiceSide::Strike => return LastFrame::SpareStrike { first },
-            DiceSide::Pin => {},
-            DiceSide::Blank | DiceSide::Spare => {
-              third += 1;
-            },
-          }
-        }
-
-        if third == 10 {
-          LastFrame::SpareStrike { first }
-        } else {
-          LastFrame::SpareOpen { first, third }
-        }
-      },
-
-      Frame::Strike => match self.generate_frame() {
-        Frame::Open {
-          first: second,
-          second: third,
-        } => LastFrame::StrikeOpen { second, third },
-
-        Frame::Spare { first: second } => LastFrame::StrikeSpare { second },
-
-        Frame::Strike => {
-          let mut third = 0;
-          for die in Self::get_all_dice() {
-            match die.roll(&mut self.rng) {
-              DiceSide::Strike => return LastFrame::TripleStrike,
-              DiceSide::Pin => {},
-              DiceSide::Blank | DiceSide::Spare => {
-                third += 1;
-              },
-            }
-          }
-
-          if third == 10 {
-            LastFrame::TripleStrike
-          } else {
-            LastFrame::DoubleStrikeOpen { third }
-          }
-        },
-      },
     }
   }
 }

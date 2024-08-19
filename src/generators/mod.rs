@@ -9,7 +9,34 @@ const SPARE: &str = "/";
 
 pub trait BowlingGenerator {
   fn generate_frame(&mut self) -> Frame;
-  fn generate_last_frame(&mut self) -> LastFrame;
+
+  /// Default implementation uses `generate_frame()` for the logic
+  fn generate_last_frame(&mut self) -> LastFrame {
+    match self.generate_frame() {
+      Frame::Open { first, second } => LastFrame::Open { first, second },
+
+      Frame::Spare { first } => match self.generate_frame() {
+        Frame::Open { first: third, .. } => LastFrame::SpareOpen { first, third },
+        Frame::Spare { first: third } => LastFrame::SpareOpen { first, third },
+        Frame::Strike => LastFrame::SpareStrike { first },
+      },
+
+      Frame::Strike => match self.generate_frame() {
+        Frame::Open {
+          first: second,
+          second: third,
+        } => LastFrame::StrikeOpen { second, third },
+
+        Frame::Spare { first: second } => LastFrame::StrikeSpare { second },
+
+        Frame::Strike => match self.generate_frame() {
+          Frame::Open { first: third, .. } => LastFrame::DoubleStrikeOpen { third },
+          Frame::Spare { first: third } => LastFrame::DoubleStrikeOpen { third },
+          Frame::Strike => LastFrame::TripleStrike,
+        },
+      },
+    }
+  }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
